@@ -17,7 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
-      const response = await fetch("/activities");
+      const response = await fetch(`/activities?t=${Date.now()}`, {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch activities");
+      }
+
       const activities = await response.json();
 
       // Clear loading message
@@ -100,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         showMessage("success", result.message);
         signupForm.reset();
-        fetchActivities();
+        await fetchActivities();
       } else {
         showMessage("error", result.detail || "An error occurred");
       }
@@ -137,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         showMessage("success", result.message);
-        fetchActivities();
+        await fetchActivities();
       } else {
         showMessage("error", result.detail || "An error occurred");
       }
